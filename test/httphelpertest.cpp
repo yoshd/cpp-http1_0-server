@@ -18,7 +18,6 @@ TEST(HTTPHelperTest, TestGetHtml) {
 
 TEST(HTTPHelperTest, TestGetHtmlNotFound) {
 
-    bool exception_flag;
     std::string html;
     try {
         html = HTTPHelper::get_html("/hoge");
