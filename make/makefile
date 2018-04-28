@@ -37,7 +37,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 		$(CXX) $(CXXFLAGS) $(INCS) -o $@ -c $<
 
 
-TEST_SRCS = $(TEST_DIR)/mytest.cpp
+TEST_SRCS = $(TEST_DIR)/httphelpertest.cpp $(TEST_DIR)/httprequestparsertest.cpp $(TEST_DIR)/httpresponseheadertest.cpp $(TEST_DIR)/httpresponsetest.cpp
 TEST_TARGET = $(BIN_DIR)/mytest
 TEST_OBJS  = $(addprefix $(OBJ_DIR)/, $(notdir $(TEST_SRCS:.cpp=.o)))
 LIBS += -L$(LIB_DIR)

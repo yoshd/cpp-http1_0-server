@@ -1,6 +1,5 @@
-#include <iostream>
+#include <string>
 #include "httpresponseheader.h"
-#include "httpresponse.h"
 #include "gtest/gtest.h"
 
 TEST(HTTPResponseHeaderTest, TestContentLength) {
@@ -26,20 +25,3 @@ TEST(HTTPResponseHeaderTest, TestResponseHeaderString) {
     std::string expect = "Content-Type: text/html\r\nServer: my-cpp\r\nContent-Length: 22\r\n";
     EXPECT_EQ(header_str, expect);
 }
-
-TEST(HTTPResponseTest, TestGetStatusCodeString) {
-    HTTPResponse *hr = new HTTPResponse();
-    hr->set_status_code(200);
-    std::string status_code_str = hr->get_status_code_str();
-    std::string expect = "200 OK";
-    EXPECT_EQ(status_code_str, expect);
-}
-
-TEST(HTTPResponseTest, TestResponseHeader) {
-    HTTPResponse *hr = new HTTPResponse();
-    hr->set_body("<h1>hello</h1>");
-    std::string response = hr->get_response_str();
-    std::string res = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\nServer: my-cpp\r\nContent-Length: 14\r\n\r\n<h1>hello</h1>";
-    EXPECT_EQ(response, res);
-}
-
