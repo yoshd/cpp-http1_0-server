@@ -12,6 +12,7 @@
 #include "httpresponse.h"
 #include "httprequestreader.h"
 #include "httprequestparser.h"
+#include "httphelper.h"
 #include "httprequest.h"
 #include "httpresponsewriter.h"
 
@@ -67,9 +68,9 @@ int run(int sock) {
     HTTPRequestReader *hrr = new HTTPRequestReader(sock);
     hrr->read_request();
     std::cout << hrr->get_request_str() << std::endl;
-    std::string body = "<h1>Your request dump</h1>\r\n" + hrr->get_request_str() + "\r\n";
 
     HTTPRequest* req = HTTPRequestParser::parse(hrr->get_request_str());
+    std::string body = HTTPHelper::get_html(req->get_path());
 
     HTTPResponse *hr = new HTTPResponse();
     hr->set_body(body);

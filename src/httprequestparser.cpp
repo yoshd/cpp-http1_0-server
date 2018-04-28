@@ -64,7 +64,7 @@ std::unordered_map<std::string, std::string> parse_kv(std::string key_value_pair
 }
 
 HTTPRequest* HTTPRequestParser::parse(std::string request_str) {
-    std::regex first_line_re(R"(^([A-Z]{3,})\s(/.*?)\?(.*?)?\s(HTTP/[0-9]\.[0-9]))");
+    std::regex first_line_re(R"(^([A-Z]{3,})\s(/.*)\??(.*)?\s(HTTP/[0-9]\.[0-9]))");
     std::regex header_kv_re(R"((.+?)\s?:\s?(.+))");
     std::string separater = "\r\n\r\n";
 
