@@ -21,7 +21,7 @@ std::string HTTPHelper::get_html(std::string path) {
     std::string html;
     std::string str;
     while (getline(ifs, str)) {
-        html += str;
+        html += str + "\n";
     }
 
     return html;
