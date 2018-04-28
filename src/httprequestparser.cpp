@@ -5,6 +5,7 @@
 #include <sstream>
 #include "httprequest.h"
 #include "httprequestparser.h"
+#include "notimplementedexception.h"
 
 std::vector<std::string> split_in_two(std::string str, std::string separator) {
 
@@ -63,7 +64,11 @@ std::unordered_map<std::string, std::string> parse_kv(std::string key_value_pair
     return kv_pairs;
 }
 
-HTTPRequest* HTTPRequestParser::parse(std::string request_str) {
+bool is_implemented_method(std::string method) {
+    return method == "GET" || method == "HEAD" || method == "POST";
+}
+
+HTTPRequest* HTTPRequestParser::parse(std::string request_str) throw(NotImplementedException) {
     std::regex first_line_re(R"(^([A-Z]{3,})\s(/[^?\s]*)\??(.*)\s(HTTP/[0-9]\.[0-9]))");
     std::regex header_kv_re(R"((.+?)\s?:\s?(.+))");
     std::string separater = "\r\n\r\n";
@@ -79,10 +84,16 @@ HTTPRequest* HTTPRequestParser::parse(std::string request_str) {
     std::string version;
     std::unordered_map<std::string, std::string> queries;
     std::unordered_map<std::string, std::string> headers;
+
     if (header_lines.size() >= 2) {
         std::smatch first_line_matched;
         if (std::regex_match(header_lines[0], first_line_matched, first_line_re)) {
+
             method = first_line_matched[1].str();
+            if (!is_implemented_method(method)) {
+                throw NotImplementedException();
+            }
+
             path = first_line_matched[2].str();
             queries = parse_kv(first_line_matched[3].str());
             version = first_line_matched[4].str();

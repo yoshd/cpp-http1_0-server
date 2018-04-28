@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include "httprequestparser.h"
 #include "httprequest.h"
+#include "notimplementedexception.h"
 #include "gtest/gtest.h"
 
 TEST(HTTPRequestParserTest, TestParseGetRequest) {
@@ -49,4 +50,9 @@ TEST(HTTPRequestParserTest, TestParsePostRequest) {
     EXPECT_EQ(expect_version_post, hr_post->get_version());
     EXPECT_EQ(expect_headers_post, hr_post->get_headers());
     EXPECT_EQ(expect_body_post, hr_post->get_body());
+}
+
+TEST(HTTPRequestParserTest, TestParseNotImplementedMethodRequest) {
+    std::string req_501 = "HOGEMETHOD / HTTP/1.1\r\nHost: example.com\r\nUser-Agent: curl/7.52.1\r\nAccept: */*\r\nContent-Length: 3\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\na=b";
+    ASSERT_THROW(HTTPRequestParser::parse(req_501), NotImplementedException);
 }

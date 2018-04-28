@@ -16,6 +16,7 @@
 #include "httprequest.h"
 #include "httpresponsewriter.h"
 #include "notfoundexception.h"
+#include "notimplementedexception.h"
 
 #define BUFFER_SIZE 512
 #define READ_TIMEOUT 10000
@@ -70,9 +71,21 @@ int run(int sock) {
     hrr->read_request();
     std::cout << hrr->get_request_str() << std::endl;
 
-    HTTPRequest* req = HTTPRequestParser::parse(hrr->get_request_str());
+    HTTPRequest* req;
     HTTPResponse *hr = new HTTPResponse();
     std::string body;
+    HTTPResponseWriter *hrw = new HTTPResponseWriter(sock);
+
+    try {
+        req = HTTPRequestParser::parse(hrr->get_request_str());
+    } catch(NotImplementedException nie) {
+        body = HTTPHelper::get_html("/not_implemented.html");
+        hr->set_body(body);
+        hr->set_status_code(nie.get_err_code());
+        hrw->write_response(hr);
+        return 0;
+    }
+
     try {
         body = HTTPHelper::get_html(req->get_path());
         hr->set_status_code(200);
@@ -80,13 +93,15 @@ int run(int sock) {
         body = HTTPHelper::get_html("/not_found.html");
         hr->set_status_code(nfe.get_err_code());
     }
+
     hr->set_body(body);
 
     if (req->get_method() == "HEAD") {
         hr->set_head_flag(true);
     }
-    HTTPResponseWriter *hrw = new HTTPResponseWriter(sock);
+
     hrw->write_response(hr);
+    return 0;
 }
 
 static int _interrupted = 0;

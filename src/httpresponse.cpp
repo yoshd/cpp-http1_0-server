@@ -6,7 +6,8 @@
 const std::unordered_map<int, std::string> HTTPResponseCode::code_map = {
     {200, "OK"},
     {400, "Bad Request"},
-    {404, "Not Found"}
+    {404, "Not Found"},
+    {501, "Not Implemented"}
 };
 
 HTTPResponse::HTTPResponse() {
