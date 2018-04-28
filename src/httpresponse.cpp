@@ -13,14 +13,19 @@ HTTPResponse::HTTPResponse() {
     this->message = HTTPResponseCode::code_map.at(200);
     this->header = new HTTPResponseHeader();
     this->body = "";
+    this->head_flag = false;
 }
 
-HTTPResponse::HTTPResponse(int status_code, HTTPResponseHeader *header, std::string body) {
+HTTPResponse::HTTPResponse(int status_code, HTTPResponseHeader *header, std::string body, bool head_flag) {
     this->status_code = status_code;
     this->message = HTTPResponseCode::code_map.at(status_code);
     this->header = header;
-    this->body = body;
-
+    this->head_flag = head_flag;
+    if (head_flag) {
+        this->body = "";
+    } else {
+        this->body = body;
+    }
     this->header->set_content_length(body);
 }
 
@@ -35,16 +40,26 @@ std::string HTTPResponse::get_status_code_str(void) {
 }
 
 void HTTPResponse::set_body(std::string body) {
-    this->body = body;
+    if (!this->head_flag) {
+        this->body = body;
+    }
     this->header->set_content_length(body);
+}
+
+void HTTPResponse::set_head_flag(bool head_flag) {
+    this->head_flag = head_flag;
+    if (head_flag) {
+        this->body = "";
+    }
 }
 
 std::string HTTPResponse::get_response_str(void) {
     std::string response_str = "HTTP/1.0 "
             + this->get_status_code_str() + "\r\n"
-            + this->header->get_header_str()
-            + "\r\n"
-            + this->body;
+            + this->header->get_header_str();
+    if (!this->head_flag) {
+        response_str += "\r\n" + this->body;
+    }
     return response_str;
 }
 

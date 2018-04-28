@@ -75,7 +75,9 @@ int run(int sock) {
     HTTPResponse *hr = new HTTPResponse();
     hr->set_body(body);
     hr->set_status_code(200);
-
+    if (req->get_method() == "HEAD") {
+        hr->set_head_flag(true);
+    }
     HTTPResponseWriter *hrw = new HTTPResponseWriter(sock);
     hrw->write_response(hr);
 }

@@ -22,3 +22,12 @@ TEST(HTTPResponseTest, TestResponse) {
     std::string res = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\nServer: my-cpp\r\nContent-Length: 14\r\n\r\n<h1>hello</h1>";
     EXPECT_EQ(response, res);
 }
+
+TEST(HTTPResponseTest, TestHeadResponse) {
+    HTTPResponse *hr = new HTTPResponse();
+    hr->set_body("<h1>hello</h1>");
+    hr->set_head_flag(true);
+    std::string response = hr->get_response_str();
+    std::string res = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\nServer: my-cpp\r\nContent-Length: 14\r\n";
+    EXPECT_EQ(response, res);
+}
