@@ -2,8 +2,9 @@
 #include <iostream>
 #include <string>
 #include "httphelper.h"
+#include "notfoundexception.h"
 
-std::string HTTPHelper::get_html(std::string path) {
+std::string HTTPHelper::get_html(std::string path) throw(NotFoundException) {
 
     std::string fname;
     if (path == "/" || path == "index.html" || path == "/favicon.ico") {
@@ -15,7 +16,7 @@ std::string HTTPHelper::get_html(std::string path) {
     std::ifstream ifs(fname);
 
     if (ifs.fail()) {
-        return "";
+        throw NotFoundException();
     }
 
     std::string html;

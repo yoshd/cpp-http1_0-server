@@ -15,6 +15,7 @@
 #include "httphelper.h"
 #include "httprequest.h"
 #include "httpresponsewriter.h"
+#include "notfoundexception.h"
 
 #define BUFFER_SIZE 512
 #define READ_TIMEOUT 10000
@@ -70,11 +71,17 @@ int run(int sock) {
     std::cout << hrr->get_request_str() << std::endl;
 
     HTTPRequest* req = HTTPRequestParser::parse(hrr->get_request_str());
-    std::string body = HTTPHelper::get_html(req->get_path());
-
     HTTPResponse *hr = new HTTPResponse();
+    std::string body;
+    try {
+        body = HTTPHelper::get_html(req->get_path());
+        hr->set_status_code(200);
+    } catch(NotFoundException nfe) {
+        body = HTTPHelper::get_html("/not_found.html");
+        hr->set_status_code(nfe.get_err_code());
+    }
     hr->set_body(body);
-    hr->set_status_code(200);
+
     if (req->get_method() == "HEAD") {
         hr->set_head_flag(true);
     }

@@ -1,5 +1,6 @@
 #include <string>
 #include "httphelper.h"
+#include "notfoundexception.h"
 #include "gtest/gtest.h"
 
 TEST(HTTPHelperTest, TestGetHtml) {
@@ -13,4 +14,20 @@ TEST(HTTPHelperTest, TestGetHtml) {
     std::string html_test = HTTPHelper::get_html("/test.html");
     std::string expect_test = "<!DOCTYPE html >\n<html lang=\"ja\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">\n<title>Test</title>\n</head>\n<body>\n<h1>Test</h1>\n<p>テスト用</p>\n</body>\n</html>\n";
     EXPECT_EQ(html_test, expect_test);
+}
+
+TEST(HTTPHelperTest, TestGetHtmlNotFound) {
+
+    bool exception_flag;
+    std::string html;
+    try {
+        html = HTTPHelper::get_html("/hoge");
+    } catch(NotFoundException nfe) {
+        html = HTTPHelper::get_html("/not_found.html");
+    }
+
+    std::string expect_html = "<!DOCTYPE html >\n<html lang=\"ja\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">\n<title>404: Not Found</title>\n</head>\n<body>\n<h1>お探しのページは見つかりません。(404: Not Found) </h1>\n</body>\n</html>\n";
+
+    EXPECT_EQ(html, expect_html);
+    ASSERT_THROW(HTTPHelper::get_html("/hoge"), NotFoundException);
 }
