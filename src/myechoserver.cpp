@@ -10,53 +10,10 @@
 #include <iostream>
 #include <string>
 #include "httpprocessor.h"
+#include "socketmanager.h"
 
 #define BUFFER_SIZE 512
 #define READ_TIMEOUT 10000
-
-int open_socket(const char *service) {
-
-    struct addrinfo hints;
-    struct addrinfo *addr_set;
-    struct addrinfo *addr;
-    int error_code;
-    int sock = -1;
-    int on = 1;
-
-    memset(&hints, 0, sizeof(hints));
-    hints.ai_flags = AI_PASSIVE;
-    hints.ai_family = AF_UNSPEC;
-    hints.ai_socktype = SOCK_STREAM;
-    error_code = getaddrinfo(NULL, service, &hints, &addr_set);
-    if (error_code != 0) {
-        return -1;
-    }
-
-    for (addr = addr_set; addr; addr = addr->ai_next) {
-        sock = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
-        if (sock < 0) {
-            perror("socket");
-            continue;
-        }
-
-        if (bind(sock, addr->ai_addr, addr->ai_addrlen) != 0) {
-            perror("bind");
-            close(sock);
-            sock = -1;
-            continue;
-        }
-
-        if (listen(sock, SOMAXCONN) != 0) {
-            perror("listen");
-            close(sock);
-            sock = -1;
-            continue;
-        }
-        break;
-    }
-
-    return sock;
-}
 
 static int _interrupted = 0;
 
@@ -138,7 +95,9 @@ int start_server(int accept_socket) {
 int main(int argc, char **argv) {
     int sock;
     int status;
-    sock = open_socket(argv[1]);
+    SocketManager *socket_manager = new SocketManager(argv[1]);
+    socket_manager->s_open();
+    sock = socket_manager->get_sock();
     status = start_server(sock);
     close(sock);
     return status;
