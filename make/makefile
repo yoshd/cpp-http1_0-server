@@ -1,4 +1,5 @@
 SRC_DIR=../src
+HTTP_DIR=$(SRC_DIR)/http
 INC_DIR=../include
 TEST_DIR=../test
 LIB_DIR=../lib
@@ -18,7 +19,7 @@ ifeq ($(UNAME),Darwin)
 endif
 
 CXXFLAGS = -g -Wall
-SRCS	 = $(SRC_DIR)/httpresponseheader.cpp $(SRC_DIR)/httpresponse.cpp $(SRC_DIR)/myechoserver.cpp $(SRC_DIR)/httprequestreader.cpp $(SRC_DIR)/httpresponsewriter.cpp $(SRC_DIR)/httprequestparser.cpp $(SRC_DIR)/httprequest.cpp $(SRC_DIR)/httphelper.cpp $(SRC_DIR)/httphandler.cpp $(SRC_DIR)/httpprocessor.cpp $(SRC_DIR)/socketmanager.cpp $(SRC_DIR)/httpserver.cpp
+SRCS	 = $(HTTP_DIR)/httpresponseheader.cpp $(HTTP_DIR)/httpresponse.cpp $(HTTP_DIR)/httprequestreader.cpp $(HTTP_DIR)/httpresponsewriter.cpp $(HTTP_DIR)/httprequestparser.cpp $(HTTP_DIR)/httprequest.cpp $(HTTP_DIR)/httphelper.cpp $(HTTP_DIR)/httphandler.cpp $(HTTP_DIR)/httpprocessor.cpp $(HTTP_DIR)/socketmanager.cpp $(HTTP_DIR)/httpserver.cpp $(SRC_DIR)/myhttpserver.cpp
 TARGET   = $(LIB_DIR)/libhttp.a
 LIB_NAME = http
 SERVER   = $(BIN_DIR)/httpserver
