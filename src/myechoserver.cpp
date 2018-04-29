@@ -19,6 +19,7 @@
 #include "httpresponsewriter.h"
 #include "notfoundexception.h"
 #include "notimplementedexception.h"
+#include "badrequestexception.h"
 
 #define BUFFER_SIZE 512
 #define READ_TIMEOUT 10000
@@ -84,6 +85,13 @@ int run(int sock) {
         HTTPResponse *hr = new HTTPResponse();
         hr->set_body(body);
         hr->set_status_code(nie.get_err_code());
+        hrw->write_response(hr);
+        return 0;
+    } catch(BadRequestException bre) {
+        body = HTTPHelper::get_content("/bad_request.html");
+        HTTPResponse *hr = new HTTPResponse();
+        hr->set_body(body);
+        hr->set_status_code(bre.get_err_code());
         hrw->write_response(hr);
         return 0;
     }

@@ -68,7 +68,7 @@ bool is_implemented_method(std::string method) {
     return method == "GET" || method == "HEAD" || method == "POST";
 }
 
-HTTPRequest* HTTPRequestParser::parse(std::string request_str) throw(NotImplementedException) {
+HTTPRequest* HTTPRequestParser::parse(std::string request_str) throw(NotImplementedException,BadRequestException) {
     std::regex first_line_re(R"(^([A-Z]{3,})\s(/[^?\s]*)\??(.*)\s(HTTP/[0-9]\.[0-9]))");
     std::regex header_kv_re(R"((.+?)\s?:\s?(.+))");
     std::string separater = "\r\n\r\n";
@@ -97,7 +97,10 @@ HTTPRequest* HTTPRequestParser::parse(std::string request_str) throw(NotImplemen
             path = first_line_matched[2].str();
             queries = parse_kv(first_line_matched[3].str());
             version = first_line_matched[4].str();
+        } else {
+            throw BadRequestException();
         }
+
         header_lines.erase(header_lines.begin());
         std::smatch header_kv_matched;
         for (std::string line : header_lines) {
@@ -105,8 +108,12 @@ HTTPRequest* HTTPRequestParser::parse(std::string request_str) throw(NotImplemen
                 std::string key = header_kv_matched[1].str();
                 std::string value = header_kv_matched[2].str();
                 headers[key] = value;
+            } else {
+                throw BadRequestException();
             }
         }
+    } else {
+        throw BadRequestException();
     }
 
     std::string body;

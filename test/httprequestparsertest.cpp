@@ -3,6 +3,7 @@
 #include "httprequestparser.h"
 #include "httprequest.h"
 #include "notimplementedexception.h"
+#include "badrequestexception.h"
 #include "gtest/gtest.h"
 
 TEST(HTTPRequestParserTest, TestParseGetRequest) {
@@ -55,4 +56,15 @@ TEST(HTTPRequestParserTest, TestParsePostRequest) {
 TEST(HTTPRequestParserTest, TestParseNotImplementedMethodRequest) {
     std::string req_501 = "HOGEMETHOD / HTTP/1.1\r\nHost: example.com\r\nUser-Agent: curl/7.52.1\r\nAccept: */*\r\nContent-Length: 3\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\na=b";
     ASSERT_THROW(HTTPRequestParser::parse(req_501), NotImplementedException);
+}
+
+TEST(HTTPRequestParserTest, TestParseBadRequest) {
+    std::string req_400_1 = "GET / HTTP/1.1\r\n\r\na=b";
+    std::string req_400_2 = "GET / HTTP/1.1\r\nHost: example.com\r\nhoge\r\n\r\na=b";
+    std::string req_400_3 = "Host: example.com\r\n\r\na=b";
+    std::string req_400_4 = "hoge";
+    ASSERT_THROW(HTTPRequestParser::parse(req_400_1), BadRequestException);
+    ASSERT_THROW(HTTPRequestParser::parse(req_400_2), BadRequestException);
+    ASSERT_THROW(HTTPRequestParser::parse(req_400_3), BadRequestException);
+    ASSERT_THROW(HTTPRequestParser::parse(req_400_4), BadRequestException);
 }
