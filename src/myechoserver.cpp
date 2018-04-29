@@ -9,10 +9,7 @@
 #include <netdb.h>
 #include <iostream>
 #include <string>
-#include "httpresponse.h"
-#include "httphandler.h"
-#include "httprequestreader.h"
-#include "httpresponsewriter.h"
+#include "httpprocessor.h"
 
 #define BUFFER_SIZE 512
 #define READ_TIMEOUT 10000
@@ -59,18 +56,6 @@ int open_socket(const char *service) {
     }
 
     return sock;
-}
-
-int run(int sock) {
-
-    HTTPRequestReader *hrr = new HTTPRequestReader(sock);
-    hrr->read_request();
-
-    HTTPResponse *response = HTTPHandler::make_response(hrr->get_request_str());
-
-    HTTPResponseWriter *hrw = new HTTPResponseWriter(sock);
-    hrw->write_response(response);
-    return 0;
 }
 
 static int _interrupted = 0;
@@ -127,7 +112,7 @@ int start_server(int accept_socket) {
         } else if (pid == 0) {
             int status;
             close(accept_socket);
-            status = run(connection_socket);
+            status = HTTPProcessor::run(connection_socket);
             exit(status);
         }
         close(connection_socket);
