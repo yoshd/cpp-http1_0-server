@@ -96,16 +96,7 @@ int run(int sock) {
         return 0;
     }
 
-    ContentType content_type;
-    std::string img_path = "/images/";
-    std::string css_path = "/styles/";
-    if (req->get_path() >= img_path && std::equal(std::begin(img_path), std::end(img_path), std::begin(req->get_path()))) {
-        content_type = ContentType::ImagePNG;
-    } else if (req->get_path() >= css_path && std::equal(std::begin(css_path), std::end(css_path), std::begin(req->get_path()))) {
-        content_type = ContentType::TextCSS;
-    } else {
-        content_type = ContentType::TextHTML;
-    }
+    ContentType content_type = HTTPHelper::determine_content_type(req->get_path());
 
     HTTPResponseHeader *hh = new HTTPResponseHeader(content_type, "my-cpp");
     HTTPResponse *hr = new HTTPResponse(200, hh, body, false);
