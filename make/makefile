@@ -36,7 +36,9 @@ $(TARGET): $(OBJS)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 		@[ -d $(OBJ_DIR) ] || mkdir -p $(OBJ_DIR)
 		$(CXX) $(CXXFLAGS) $(INCS) -o $@ -c $<
-
+$(OBJ_DIR)/%.o: $(HTTP_DIR)/%.cpp
+		@[ -d $(OBJ_DIR) ] || mkdir -p $(OBJ_DIR)
+		$(CXX) $(CXXFLAGS) $(INCS) -o $@ -c $<
 
 TEST_SRCS = $(TEST_DIR)/httphelpertest.cpp $(TEST_DIR)/httprequestparsertest.cpp $(TEST_DIR)/httpresponseheadertest.cpp $(TEST_DIR)/httpresponsetest.cpp $(TEST_DIR)/httphandlertest.cpp
 TEST_TARGET = $(BIN_DIR)/mytest

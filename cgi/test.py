@@ -1,0 +1,1 @@
+print("OK Test CGI")

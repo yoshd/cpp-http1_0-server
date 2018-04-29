@@ -4,7 +4,7 @@
 #include "httpresponseheader.h"
 #include "gtest/gtest.h"
 
-TEST(HTTPHelperTest, TestGetHtml) {
+TEST(HTTPHelperTest, TestGetContent) {
     std::string html_index1 = HTTPHelper::get_content("/index.html");
     std::string html_index2 = HTTPHelper::get_content("/");
     std::string expect_index = "<!DOCTYPE html >\n<html lang=\"ja\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">\n<link rel=\"stylesheet\" type=\"text/css\" href=\"styles/style.css\">\n<title>HelloWorld</title>\n</head>\n<body>\n<h1>Hello, world!</h1>\n<p>こんにちは、世界!</p>\n</body>\n</html>\n";
@@ -15,7 +15,7 @@ TEST(HTTPHelperTest, TestGetHtml) {
     EXPECT_EQ(html_test, expect_test);
 }
 
-TEST(HTTPHelperTest, TestGetHtmlNotFound) {
+TEST(HTTPHelperTest, TestGetContentNotFound) {
 
     std::string html;
     try {
@@ -59,4 +59,13 @@ TEST(HTTPHelperTest, TestDetermineContentType) {
     EXPECT_EQ(png3, expect_png);
     EXPECT_EQ(gif, expect_gif);
     EXPECT_EQ(text, expect_text);
+}
+
+TEST(HTTPHelperTest, TestGetContentCGI) {
+    std::string test_cgi1 = HTTPHelper::get_content("/test.cgi");
+    std::string test_cgi2 = HTTPHelper::get_content("/test.py");
+    std::string expect_cgi = "OK Test CGI\n";
+
+    EXPECT_EQ(test_cgi1, expect_cgi);
+    EXPECT_EQ(test_cgi2, expect_cgi);
 }
