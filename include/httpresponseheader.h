@@ -5,6 +5,10 @@
 enum class ContentType {
     TextHTML,
     TextPlain,
+    TextCSS,
+    ImageJPEG,
+    ImagePNG,
+    ImageGIF,
 };
 
 class HTTPResponseHeader {

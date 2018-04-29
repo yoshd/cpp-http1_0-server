@@ -25,6 +25,18 @@ std::string HTTPResponseHeader::get_content_type_str(void) {
         case ContentType::TextPlain:
             content_type_str = "text/plain";
             break;
+        case ContentType::TextCSS:
+            content_type_str = "text/css";
+            break;
+        case ContentType::ImageJPEG:
+            content_type_str = "image/jpeg";
+            break;
+        case ContentType::ImagePNG:
+            content_type_str = "image/png";
+            break;
+        case ContentType::ImageGIF:
+            content_type_str = "image/gif";
+            break;
     }
     return content_type_str;
 }

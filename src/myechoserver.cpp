@@ -9,6 +9,8 @@
 #include <netdb.h>
 #include <iostream>
 #include <string>
+#include <algorithm>
+#include "httpresponseheader.h"
 #include "httpresponse.h"
 #include "httprequestreader.h"
 #include "httprequestparser.h"
@@ -72,25 +74,39 @@ int run(int sock) {
     std::cout << hrr->get_request_str() << std::endl;
 
     HTTPRequest* req;
-    HTTPResponse *hr = new HTTPResponse();
     std::string body;
     HTTPResponseWriter *hrw = new HTTPResponseWriter(sock);
 
     try {
         req = HTTPRequestParser::parse(hrr->get_request_str());
     } catch(NotImplementedException nie) {
-        body = HTTPHelper::get_html("/not_implemented.html");
+        body = HTTPHelper::get_content("/not_implemented.html");
+        HTTPResponse *hr = new HTTPResponse();
         hr->set_body(body);
         hr->set_status_code(nie.get_err_code());
         hrw->write_response(hr);
         return 0;
     }
 
+    ContentType content_type;
+    std::string img_path = "/images/";
+    std::string css_path = "/styles/";
+    if (req->get_path() >= img_path && std::equal(std::begin(img_path), std::end(img_path), std::begin(req->get_path()))) {
+        content_type = ContentType::ImagePNG;
+    } else if (req->get_path() >= css_path && std::equal(std::begin(css_path), std::end(css_path), std::begin(req->get_path()))) {
+        content_type = ContentType::TextCSS;
+    } else {
+        content_type = ContentType::TextHTML;
+    }
+
+    HTTPResponseHeader *hh = new HTTPResponseHeader(content_type, "my-cpp");
+    HTTPResponse *hr = new HTTPResponse(200, hh, body, false);
+
     try {
-        body = HTTPHelper::get_html(req->get_path());
+        body = HTTPHelper::get_content(req->get_path());
         hr->set_status_code(200);
     } catch(NotFoundException nfe) {
-        body = HTTPHelper::get_html("/not_found.html");
+        body = HTTPHelper::get_content("/not_found.html");
         hr->set_status_code(nfe.get_err_code());
     }
 
