@@ -18,11 +18,12 @@ class HTTPResponse {
         bool head_flag;
     public:
         HTTPResponse();
-        HTTPResponse(int status_code, HTTPResponseHeader *header, std::string body, bool head_flag);
+        HTTPResponse(HTTPResponseHeader *header);
         void set_status_code(int code);
         int get_status_code(void) { return this->status_code; }
         std::string get_status_code_str(void);
         void set_header(HTTPResponseHeader *header) { this->header = header; }
+        void set_header_content_type(ContentType content_type) { this->header->set_content_type(content_type); }
         HTTPResponseHeader* get_header(void) { return this->header; }
         void set_body(std::string body);
         std::string get_body(void) { return this->body; }

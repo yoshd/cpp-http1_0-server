@@ -9,17 +9,10 @@
 #include <netdb.h>
 #include <iostream>
 #include <string>
-#include <algorithm>
-#include "httpresponseheader.h"
 #include "httpresponse.h"
+#include "httphandler.h"
 #include "httprequestreader.h"
-#include "httprequestparser.h"
-#include "httphelper.h"
-#include "httprequest.h"
 #include "httpresponsewriter.h"
-#include "notfoundexception.h"
-#include "notimplementedexception.h"
-#include "badrequestexception.h"
 
 #define BUFFER_SIZE 512
 #define READ_TIMEOUT 10000
@@ -72,50 +65,11 @@ int run(int sock) {
 
     HTTPRequestReader *hrr = new HTTPRequestReader(sock);
     hrr->read_request();
-    std::cout << hrr->get_request_str() << std::endl;
 
-    HTTPRequest* req;
-    std::string body;
+    HTTPResponse *response = HTTPHandler::make_response(hrr->get_request_str());
+
     HTTPResponseWriter *hrw = new HTTPResponseWriter(sock);
-
-    try {
-        req = HTTPRequestParser::parse(hrr->get_request_str());
-    } catch(NotImplementedException nie) {
-        body = HTTPHelper::get_content("/not_implemented.html");
-        HTTPResponse *hr = new HTTPResponse();
-        hr->set_body(body);
-        hr->set_status_code(nie.get_err_code());
-        hrw->write_response(hr);
-        return 0;
-    } catch(BadRequestException bre) {
-        body = HTTPHelper::get_content("/bad_request.html");
-        HTTPResponse *hr = new HTTPResponse();
-        hr->set_body(body);
-        hr->set_status_code(bre.get_err_code());
-        hrw->write_response(hr);
-        return 0;
-    }
-
-    ContentType content_type = HTTPHelper::determine_content_type(req->get_path());
-
-    HTTPResponseHeader *hh = new HTTPResponseHeader(content_type, "my-cpp");
-    HTTPResponse *hr = new HTTPResponse(200, hh, body, false);
-
-    try {
-        body = HTTPHelper::get_content(req->get_path());
-        hr->set_status_code(200);
-    } catch(NotFoundException nfe) {
-        body = HTTPHelper::get_content("/not_found.html");
-        hr->set_status_code(nfe.get_err_code());
-    }
-
-    hr->set_body(body);
-
-    if (req->get_method() == "HEAD") {
-        hr->set_head_flag(true);
-    }
-
-    hrw->write_response(hr);
+    hrw->write_response(response);
     return 0;
 }
 

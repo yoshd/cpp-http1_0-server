@@ -18,17 +18,12 @@ HTTPResponse::HTTPResponse() {
     this->head_flag = false;
 }
 
-HTTPResponse::HTTPResponse(int status_code, HTTPResponseHeader *header, std::string body, bool head_flag) {
-    this->status_code = status_code;
-    this->message = HTTPResponseCode::code_map.at(status_code);
+HTTPResponse::HTTPResponse(HTTPResponseHeader *header) {
+    this->status_code = 200;
+    this->message = HTTPResponseCode::code_map.at(200);
     this->header = header;
-    this->head_flag = head_flag;
-    if (head_flag) {
-        this->body = "";
-    } else {
-        this->body = body;
-    }
-    this->header->set_content_length(body);
+    this->head_flag = false;
+    this->body = "";
 }
 
 void HTTPResponse::set_status_code(int code) {
