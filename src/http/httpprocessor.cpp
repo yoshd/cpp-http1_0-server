@@ -14,5 +14,8 @@ int HTTPProcessor::run(int sock) {
     HTTPResponseWriter *hrw = new HTTPResponseWriter(sock);
     hrw->write_response(response);
 
+    delete hrr;
+    delete response;
+    delete hrw;
     return 0;
 }

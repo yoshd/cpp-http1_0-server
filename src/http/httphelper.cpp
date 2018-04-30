@@ -51,7 +51,6 @@ std::string execute_cgi(std::string path) throw(NotFoundException) {
         result += buf;
     }
     pclose(fp);
-    std::cout<<result;
     return result;
 }
 
