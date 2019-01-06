@@ -19,7 +19,7 @@ ifeq ($(UNAME),Darwin)
 endif
 
 CXXFLAGS = -g -Wall
-SRCS	 = $(HTTP_DIR)/httpresponseheader.cpp $(HTTP_DIR)/httpresponse.cpp $(HTTP_DIR)/httprequestreader.cpp $(HTTP_DIR)/httpresponsewriter.cpp $(HTTP_DIR)/httprequestparser.cpp $(HTTP_DIR)/httprequest.cpp $(HTTP_DIR)/httphelper.cpp $(HTTP_DIR)/httphandler.cpp $(HTTP_DIR)/httpprocessor.cpp $(HTTP_DIR)/socketmanager.cpp $(HTTP_DIR)/httpserver.cpp $(SRC_DIR)/myhttpserver.cpp
+SRCS	 = $(wildcard $(HTTP_DIR)/*.cpp) $(wildcard $(SRC_DIR)/*.cpp)
 TARGET   = $(LIB_DIR)/libhttp.a
 LIB_NAME = http
 SERVER   = $(BIN_DIR)/httpserver
@@ -40,7 +40,7 @@ $(OBJ_DIR)/%.o: $(HTTP_DIR)/%.cpp
 		@[ -d $(OBJ_DIR) ] || mkdir -p $(OBJ_DIR)
 		$(CXX) $(CXXFLAGS) $(INCS) -o $@ -c $<
 
-TEST_SRCS = $(TEST_DIR)/httphelpertest.cpp $(TEST_DIR)/httprequestparsertest.cpp $(TEST_DIR)/httpresponseheadertest.cpp $(TEST_DIR)/httpresponsetest.cpp $(TEST_DIR)/httphandlertest.cpp
+TEST_SRCS = $(wildcard $(TEST_DIR)/*.cpp)
 TEST_TARGET = $(BIN_DIR)/mytest
 TEST_OBJS  = $(addprefix $(OBJ_DIR)/, $(notdir $(TEST_SRCS:.cpp=.o)))
 LIBS += -L$(LIB_DIR)
