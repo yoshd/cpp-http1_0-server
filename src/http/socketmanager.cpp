@@ -16,7 +16,6 @@ void SocketManager::s_open(void) {
     struct addrinfo *addr_set;
     struct addrinfo *addr;
     int error_code;
-    int on = 1;
 
     memset(&hints, 0, sizeof(hints));
     hints.ai_flags = AI_PASSIVE;
